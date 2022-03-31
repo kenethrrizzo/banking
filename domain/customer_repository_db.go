@@ -6,20 +6,20 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	errs "github.com/kenethrrizzo/banking/error"
 )
 
 type CustomerRepositoryDb struct {
 	client *sql.DB
 }
 
-func (d CustomerRepositoryDb) FindAll() ([]Customer, error) {
-
+func (d CustomerRepositoryDb) FindAll() ([]Customer, *errs.AppError) {
 	findAllQuery := "select cu_id, cu_name, cu_city, cu_zipcode, cu_date_of_birth, cu_status from customers"
 
 	rows, err := d.client.Query(findAllQuery)
 	if err != nil {
 		log.Println("Error while querying customer table ->", err.Error())
-		return nil, err
+		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
 	customers := make([]Customer, 0)
@@ -29,7 +29,7 @@ func (d CustomerRepositoryDb) FindAll() ([]Customer, error) {
 		err := rows.Scan(&c.Id, &c.Name, &c.City, &c.ZipCode, &c.DateOfBirth, &c.Status)
 		if err != nil {
 			log.Println("Error while scanning customers ->", err.Error())
-			return nil, err
+			return nil, errs.NewUnexpectedError("Unexpected database error")
 		}
 		customers = append(customers, c)
 	}
@@ -37,7 +37,7 @@ func (d CustomerRepositoryDb) FindAll() ([]Customer, error) {
 	return customers, nil
 }
 
-func (d CustomerRepositoryDb) FindById(id string) (*Customer, error) {
+func (d CustomerRepositoryDb) FindById(id string) (*Customer, *errs.AppError) {
 	findByIdQuery := "select cu_id, cu_name, cu_city, cu_zipcode, cu_date_of_birth, cu_status from customers where cu_id = ?"
 
 	row := d.client.QueryRow(findByIdQuery, id)
@@ -45,8 +45,11 @@ func (d CustomerRepositoryDb) FindById(id string) (*Customer, error) {
 	var c Customer
 	err := row.Scan(&c.Id, &c.Name, &c.City, &c.ZipCode, &c.DateOfBirth, &c.Status)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errs.NewNotFoundError("Customer not found")
+		}
 		log.Println("Error while scanning customer ->", err.Error())
-		return nil, err
+		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
 	return &c, nil
