@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/kenethrrizzo/banking/logger"
 	"github.com/kenethrrizzo/banking/service"
 )
 
@@ -43,6 +44,6 @@ func writeResponse(rw http.ResponseWriter, code int, data interface{}) {
 	rw.Header().Add("Content-Type", "application/json")
 	rw.WriteHeader(code)
 	if err := json.NewEncoder(rw).Encode(data); err != nil {
-		panic(err)
+		logger.Error(err.Error())
 	}
 }
