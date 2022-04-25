@@ -3,12 +3,12 @@ package domain
 import errs "github.com/kenethrrizzo/banking/error"
 
 type Customer struct {
-	Id          string
-	Name        string
-	City        string
-	ZipCode     string
-	DateOfBirth string
-	Status      string
+	Id          string `db:"cu_id"`
+	Name        string `db:"cu_name"`
+	City        string `db:"cu_city"`
+	ZipCode     string `db:"cu_zipcode"`
+	DateOfBirth string `db:"cu_date_of_birth"`
+	Status      string `db:"cu_status"`
 }
 
 type CustomerRepository interface {
