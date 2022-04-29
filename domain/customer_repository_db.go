@@ -29,7 +29,7 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
-	logger.Debug("Customers returned.")
+	logger.Info("Customers found.")
 	return customers, nil
 }
 
@@ -47,7 +47,7 @@ func (d CustomerRepositoryDb) FindById(id string) (*Customer, *errs.AppError) {
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
-	logger.Debug("Customer found.")
+	logger.Info("Customer found.")
 	return &customer, nil
 }
 
