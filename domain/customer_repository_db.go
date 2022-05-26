@@ -2,12 +2,14 @@ package domain
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	errs "github.com/kenethrrizzo/banking/error"
 	"github.com/kenethrrizzo/banking/logger"
+	"github.com/spf13/viper"
 )
 
 type CustomerRepositoryDb struct {
@@ -52,7 +54,12 @@ func (d CustomerRepositoryDb) FindById(id string) (*Customer, *errs.AppError) {
 }
 
 func NewCustomerRepositoryDb() CustomerRepositoryDb {
-	client, err := sqlx.Open("mysql", "root:root@/banking")
+	dbDriver := viper.GetString("database.driver")
+	dbUsername := viper.GetString("database.username")
+	dbPassword := viper.GetString("database.password")
+	dbName := viper.GetString("database.name")
+
+	client, err := sqlx.Open(dbDriver, fmt.Sprintf("%s:%s@/%s", dbUsername, dbPassword, dbName))
 	if err != nil {
 		panic(err)
 	}
