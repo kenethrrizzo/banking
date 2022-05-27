@@ -2,12 +2,9 @@ package domain
 
 import (
 	"database/sql"
-	"fmt"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"github.com/kenethrrizzo/banking/config"
 	errs "github.com/kenethrrizzo/banking/error"
 	"github.com/kenethrrizzo/banking/logger"
 )
@@ -53,17 +50,6 @@ func (d CustomerRepositoryDb) FindById(id string) (*Customer, *errs.AppError) {
 	return &customer, nil
 }
 
-func NewCustomerRepositoryDb() CustomerRepositoryDb {
-	dbconfig := config.NewDatabaseConfig()
-
-	client, err := sqlx.Open(dbconfig.Driver, fmt.Sprintf("%s:%s@/%s", dbconfig.Username, dbconfig.Password, dbconfig.Name))
-	if err != nil {
-		panic(err)
-	}
-
-	client.SetConnMaxLifetime(time.Minute * 3)
-	client.SetMaxOpenConns(10)
-	client.SetMaxIdleConns(10)
-
-	return CustomerRepositoryDb{client}
+func NewCustomerRepositoryDb(dbclient *sqlx.DB) CustomerRepositoryDb {
+	return CustomerRepositoryDb{dbclient}
 }
