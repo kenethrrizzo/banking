@@ -26,12 +26,12 @@ func Start() {
 	}
 
 	router.HandleFunc(
-		"/customers", cushandl.getAllCustomers).Methods(
-		http.MethodGet)
+		"/customers", cushandl.getAllCustomers,
+	).Methods(http.MethodGet)
 
 	router.HandleFunc(
-		"/customers/{customer_id:[0-9]+}", cushandl.getCustomer).Methods(
-		http.MethodGet)
+		"/customers/{customer_id:[0-9]+}", cushandl.getCustomer,
+	).Methods(http.MethodGet)
 
 	logger.Error(http.ListenAndServe(
 		fmt.Sprintf("%s:%s",
