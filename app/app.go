@@ -21,18 +21,35 @@ func Start() {
 	customerepodb := domain.NewCustomerRepositoryDb(dbclient)
 	//accountrepodb := domain.NewCustomerRepositoryDb(dbclient)
 
-	cushandl := CustomerHandler{service.NewCustomerService(customerepodb)}
+	cushandl := CustomerHandler{
+		service.NewCustomerService(customerepodb),
+	}
 
-	router.HandleFunc("/customers", cushandl.getAllCustomers).Methods(http.MethodGet)
-	router.HandleFunc("/customers/{customer_id:[0-9]+}", cushandl.getCustomer).Methods(http.MethodGet)
+	router.HandleFunc(
+		"/customers", cushandl.getAllCustomers).Methods(
+		http.MethodGet)
 
-	logger.Error(http.ListenAndServe(fmt.Sprintf("%s:%s", dbconfig.Domain, dbconfig.Port), router).Error())
+	router.HandleFunc(
+		"/customers/{customer_id:[0-9]+}", cushandl.getCustomer).Methods(
+		http.MethodGet)
+
+	logger.Error(http.ListenAndServe(
+		fmt.Sprintf("%s:%s",
+			dbconfig.Domain,
+			dbconfig.Port),
+		router).Error())
 }
 
 func getDatabaseClient() *sqlx.DB {
 	dbconfig := config.NewDatabaseConfig()
 
-	client, err := sqlx.Open(dbconfig.Driver, fmt.Sprintf("%s:%s@/%s", dbconfig.Username, dbconfig.Password, dbconfig.Name))
+	client, err := sqlx.Open(
+		dbconfig.Driver,
+		fmt.Sprintf("%s:%s@/%s",
+			dbconfig.Username,
+			dbconfig.Password,
+			dbconfig.Name))
+
 	if err != nil {
 		panic(err)
 	}
