@@ -1,5 +1,7 @@
 package domain
 
+// Adapter: Database
+
 import (
 	"database/sql"
 

@@ -1,5 +1,7 @@
 package app
 
+// Adapter: REST Handler
+
 import (
 	"encoding/json"
 	"net/http"

@@ -1,5 +1,7 @@
 package domain
 
+// Secundary port: Interface
+
 import (
 	"github.com/kenethrrizzo/banking/dto"
 	errs "github.com/kenethrrizzo/banking/error"

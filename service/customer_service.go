@@ -1,5 +1,7 @@
 package service
 
+// Primary port: Service
+
 import (
 	"github.com/kenethrrizzo/banking/domain"
 	"github.com/kenethrrizzo/banking/dto"
@@ -10,6 +12,8 @@ type CustomerService interface {
 	GetAllCustomers(string) ([]dto.CustomerResponse, *errs.AppError)
 	GetCustomer(string) (*dto.CustomerResponse, *errs.AppError)
 }
+
+// Service implementation (core - business logic)
 
 type DefaultCustomerService struct {
 	repo domain.CustomerRepository
