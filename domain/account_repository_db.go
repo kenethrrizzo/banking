@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/jmoiron/sqlx"
@@ -12,8 +13,8 @@ type AccountRepositoryDb struct {
 	client *sqlx.DB
 }
 
-func (d *AccountRepositoryDb) Save(a Account) (*Account, *errs.AppError) {
-	sqlInsert := "insert into accounts (cu_id, ac_opening_date, ac_type, ac_amount, ac_status) values (?, ?, ?, ?, ?)"
+func (d AccountRepositoryDb) Save(a Account) (*Account, *errs.AppError) {
+	sqlInsert := "insert into Accounts (CustomerId, OpeningDate, Type, Amount, Status) values (?, ?, ?, ?, ?)"
 
 	result, err := d.client.Exec(sqlInsert, a.CustomerId, a.OpeningDate, a.Type, a.Amount, a.Status)
 	if err != nil {
@@ -28,6 +29,7 @@ func (d *AccountRepositoryDb) Save(a Account) (*Account, *errs.AppError) {
 	}
 
 	a.Id = strconv.FormatInt(id, 10)
+	logger.Info(fmt.Sprintf("Account with id %s saved", a.Id))
 	return &a, nil
 }
 

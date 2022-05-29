@@ -8,12 +8,12 @@ import (
 )
 
 type Customer struct {
-	Id          string `db:"cu_id"`
-	Name        string `db:"cu_name"`
-	City        string `db:"cu_city"`
-	ZipCode     string `db:"cu_zipcode"`
-	DateOfBirth string `db:"cu_date_of_birth"`
-	Status      string `db:"cu_status"`
+	Id          string `db:"Id"`
+	Name        string `db:"Name"`
+	City        string `db:"City"`
+	ZipCode     string `db:"ZipCode"`
+	DateOfBirth string `db:"DateOfBirth"`
+	Status      string `db:"Status"`
 }
 
 type CustomerRepository interface {

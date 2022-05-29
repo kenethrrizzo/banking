@@ -4,6 +4,7 @@ package domain
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -19,9 +20,9 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 	customers := make([]Customer, 0)
 	var findAllQuery string
 	if status == "" {
-		findAllQuery = "select cu_id, cu_name, cu_city, cu_zipcode, cu_date_of_birth, cu_status from customers"
+		findAllQuery = "select Id, Name, City, ZipCode, DateOfBirth, Status from Customers"
 	} else {
-		findAllQuery = "select cu_id, cu_name, cu_city, cu_zipcode, cu_date_of_birth, cu_status from customers where cu_status = '" + status + "'"
+		findAllQuery = fmt.Sprintf("select Id, Name, City, ZipCode, DateOfBirth, Status from Customers where Status = '%s'", status)
 	}
 	err := d.client.Select(&customers, findAllQuery)
 
@@ -36,7 +37,7 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 
 func (d CustomerRepositoryDb) FindById(id string) (*Customer, *errs.AppError) {
 	var customer Customer
-	findByIdQuery := "select cu_id, cu_name, cu_city, cu_zipcode, cu_date_of_birth, cu_status from customers where cu_id = ?"
+	findByIdQuery := "select Id, Name, City, ZipCode, DateOfBirth, Status from Customers where Id = ?"
 
 	err := d.client.Get(&customer, findByIdQuery, id)
 	if err != nil {

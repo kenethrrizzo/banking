@@ -19,10 +19,14 @@ func Start() {
 	dbclient := getDatabaseClient()
 
 	customerepodb := domain.NewCustomerRepositoryDb(dbclient)
-	//accountrepodb := domain.NewCustomerRepositoryDb(dbclient)
+	accountrepodb := domain.NewAccountRepositoryDb(dbclient)
 
 	cushandl := CustomerHandler{
 		service.NewCustomerService(customerepodb),
+	}
+
+	acchandl := AccountHandler{
+		service.NewAccountService(accountrepodb),
 	}
 
 	router.HandleFunc(
@@ -32,6 +36,10 @@ func Start() {
 	router.HandleFunc(
 		"/customers/{customer_id:[0-9]+}", cushandl.getCustomer,
 	).Methods(http.MethodGet)
+
+	router.HandleFunc(
+		"/customers/{customer_id:[0-9]+}/account", acchandl.newAccount,
+	).Methods(http.MethodPost)
 
 	logger.Error(http.ListenAndServe(
 		fmt.Sprintf("%s:%s",

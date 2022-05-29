@@ -6,12 +6,12 @@ import (
 )
 
 type Account struct {
-	Id          string
-	CustomerId  string
-	OpeningDate string
-	Type        string
-	Amount      float64
-	Status      string
+	Id          string  `db:"Id"`
+	CustomerId  string  `db:"CustomerId"`
+	OpeningDate string  `db:"OpeningDate"`
+	Type        string  `db:"Type"`
+	Amount      float64 `db:"Amount"`
+	Status      string  `db:"Status"`
 }
 
 func (a Account) ToNewAccountResponseDto() dto.NewAccountResponse {
