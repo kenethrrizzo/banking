@@ -1,16 +1,26 @@
 package service
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
 	"github.com/kenethrrizzo/banking/domain"
 	"github.com/kenethrrizzo/banking/dto"
 	errs "github.com/kenethrrizzo/banking/error"
+	"github.com/kenethrrizzo/banking/logger"
 )
+
+const (
+	WITHDRAWAL string = "withdrawal"
+	DEPOSIT    string = "deposit"
+)
+
+const dbTSLayout = "2006-01-02 15:04:05"
 
 type AccountService interface {
 	NewAccount(dto.NewAccountRequest) (*dto.NewAccountResponse, *errs.AppError)
+	MakeTransaction(dto.TransactionRequest) (*dto.TransactionResponse, *errs.AppError)
 }
 
 type DefaultAccountService struct {
@@ -29,7 +39,7 @@ func (s DefaultAccountService) NewAccount(req dto.NewAccountRequest) (*dto.NewAc
 	account := domain.Account{
 		Id:          "",
 		CustomerId:  req.CustomerId,
-		OpeningDate: time.Now().Format(time.RFC3339),
+		OpeningDate: time.Now().Format(dbTSLayout),
 		Type:        req.Type,
 		Amount:      req.Amount,
 		Status:      "1",
@@ -39,6 +49,43 @@ func (s DefaultAccountService) NewAccount(req dto.NewAccountRequest) (*dto.NewAc
 		return nil, err
 	}
 	response := newAccount.ToNewAccountResponseDto()
+	return &response, nil
+}
+
+func (s DefaultAccountService) MakeTransaction(req dto.TransactionRequest) (*dto.TransactionResponse, *errs.AppError) {
+	t := domain.Transaction {
+		AccountId: req.AccountId,
+		Amount: req.Amount,
+		Type: req.Type,
+		Date: time.Now().Format(dbTSLayout),
+	}
+
+	if !t.IsDeposit() && !t.IsWithdrawal() {
+		logger.Error(fmt.Sprintf("Transaction type '%s' is not allowed", req.Type))
+		return nil, errs.NewValidationError("Transaction type not allowed")
+	}
+	if t.Amount < 0 {
+		logger.Error("Amount must be positive")
+		return nil, errs.NewValidationError("Negative amount")
+	}
+
+	if t.IsWithdrawal() {
+		acc, err := s.repo.FindById(t.AccountId)
+		if err != nil {
+			return nil, err
+		}
+		if !acc.CanWithdraw(t.Amount) {
+			return nil, errs.NewValidationError("Insufficient balance in the account")
+		}
+	}
+
+	transaction, err := s.repo.SaveTransaction(t)
+	if err != nil {
+		return nil, err
+	}
+
+	response := transaction.ToDto()
+	logger.Debug(fmt.Sprint("TransactionResponse: ", response))
 	return &response, nil
 }
 

@@ -34,11 +34,15 @@ func Start() {
 	).Methods(http.MethodGet)
 
 	router.HandleFunc(
-		"/customers/{customer_id:[0-9]+}", cushandl.getCustomer,
+		"/customers/{customer-id:[0-9]+}", cushandl.getCustomer,
 	).Methods(http.MethodGet)
 
 	router.HandleFunc(
-		"/customers/{customer_id:[0-9]+}/account", acchandl.newAccount,
+		"/customers/{customer-id:[0-9]+}/account", acchandl.newAccount,
+	).Methods(http.MethodPost)
+
+	router.HandleFunc(
+		"/customers/{customer-id:[0-9]+}/account/{account-id:[0-9]+}", acchandl.makeTransaction,
 	).Methods(http.MethodPost)
 
 	logger.Error(http.ListenAndServe(

@@ -16,6 +16,7 @@ type CustomerHandler struct {
 }
 
 func (ch *CustomerHandler) getAllCustomers(rw http.ResponseWriter, r *http.Request) {
+	logger.Debug("getAllCustomers handler [GET]")
 	var status string
 	statusQuery := r.URL.Query()["status"]
 
@@ -31,8 +32,9 @@ func (ch *CustomerHandler) getAllCustomers(rw http.ResponseWriter, r *http.Reque
 }
 
 func (ch *CustomerHandler) getCustomer(rw http.ResponseWriter, r *http.Request) {
+	logger.Debug("getCustomer handler [GET]")
 	vars := mux.Vars(r)
-	id := vars["customer_id"]
+	id := vars["customer-id"]
 
 	customer, err := ch.service.GetCustomer(id)
 	if err != nil {

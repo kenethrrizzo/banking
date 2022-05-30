@@ -27,11 +27,12 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 	err := d.client.Select(&customers, findAllQuery)
 
 	if err != nil {
-		logger.Error("Error while querying customer table -> " + err.Error())
+		logger.Error("Error while querying customer table: " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
 	logger.Info("Customers found.")
+	logger.Debug(fmt.Sprint("Customers:", customers))
 	return customers, nil
 }
 
@@ -42,14 +43,15 @@ func (d CustomerRepositoryDb) FindById(id string) (*Customer, *errs.AppError) {
 	err := d.client.Get(&customer, findByIdQuery, id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			logger.Error("Customer not found -> " + err.Error())
+			logger.Error("Customer not found: " + err.Error())
 			return nil, errs.NewNotFoundError("Customer not found")
 		}
-		logger.Error("Error while scanning customer -> " + err.Error())
+		logger.Error("Error while scanning customer: " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 
 	logger.Info("Customer found.")
+	logger.Debug(fmt.Sprint("Customer:", customer))
 	return &customer, nil
 }
 
