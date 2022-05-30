@@ -23,6 +23,10 @@ func (t Transaction) IsDeposit() bool {
 	return t.Type == DEPOSIT
 }
 
+func (t Transaction) IsAmountPositive() bool {
+	return t.Amount > 0
+}
+
 func (t Transaction) ToDto() dto.TransactionResponse {
 	return dto.TransactionResponse{
 		Id:        t.Id,

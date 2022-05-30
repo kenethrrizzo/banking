@@ -64,7 +64,7 @@ func (s DefaultAccountService) MakeTransaction(req dto.TransactionRequest) (*dto
 		logger.Error(fmt.Sprintf("Transaction type '%s' is not allowed", req.Type))
 		return nil, errs.NewValidationError("Transaction type not allowed")
 	}
-	if t.Amount < 0 {
+	if !t.IsAmountPositive() {
 		logger.Error("Amount must be positive")
 		return nil, errs.NewValidationError("Negative amount")
 	}
