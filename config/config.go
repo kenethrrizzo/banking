@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	Database DatabaseConfig `mapstructure:"database"`
+	Server   ServerConfig   `mapstructure:"server"`
 }
 
 type DatabaseConfig struct {
@@ -20,8 +21,17 @@ type DatabaseConfig struct {
 	Password string `mapstructure:"password"`
 }
 
+type ServerConfig struct {
+	Address string `mapstructure:"address"`
+	Port    string `mapstructure:"port"`
+}
+
 func NewDatabaseConfig() DatabaseConfig {
 	return unmarshalConfig().Database
+}
+
+func NewServerConfig() ServerConfig {
+	return unmarshalConfig().Server
 }
 
 func unmarshalConfig() Config {

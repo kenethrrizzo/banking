@@ -15,7 +15,7 @@ import (
 
 func Start() {
 	router := mux.NewRouter()
-	dbconfig := config.NewDatabaseConfig()
+	serverConfig := config.NewServerConfig()
 	dbclient := getDatabaseClient()
 
 	customerepodb := domain.NewCustomerRepositoryDb(dbclient)
@@ -47,8 +47,8 @@ func Start() {
 
 	logger.Error(http.ListenAndServe(
 		fmt.Sprintf("%s:%s",
-			dbconfig.Domain,
-			dbconfig.Port),
+			serverConfig.Address,
+			serverConfig.Port),
 		router).Error())
 }
 
