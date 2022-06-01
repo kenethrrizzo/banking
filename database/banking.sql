@@ -10,7 +10,7 @@ create table `Customers` (
 	`City` varchar(40),
 	`ZipCode` varchar(10),
 	`DateOfBirth` date,
-	`Status` char
+	`Status` tinyint(1)
 );
 
 insert into `Customers` (`Name`, `City`, `ZipCode`, `DateOfBirth`, `Status`) 
@@ -30,8 +30,8 @@ create table `Accounts` (
 	`CustomerId` int,
 	`OpeningDate` varchar(50),
 	`Type` varchar(20),
-	`Amount` float,
-	`Status` char,
+	`Amount` decimal(10, 2),
+	`Status` tinyint(1),
 	foreign key (`CustomerId`) references Customers(`Id`)
 );
 
@@ -46,6 +46,20 @@ create table `Transactions` (
 	`AccountId` int,
 	`Amount` float,
 	`Type` varchar(20),
-	`Date` varchar(50),
+	`Date` datetime not null default current_timestamp,
 	foreign key (`AccountId`) references Accounts(`Id`)
-)
+);
+
+create table `Users` (
+	`Username` varchar(25) not null primary key,
+	`Password` varchar(25) not null,
+	`Role` varchar(25) not null,
+	`CustomerId` int default null,
+	`CreatedOn` datetime not null default current_timestamp,
+	foreign key (`CustomerId`) references Customers(`Id`)
+);
+
+INSERT INTO `Users` VALUES
+  ('admin','abc123','admin', NULL, '2020-08-09 10:27:22'),
+  ('2001','abc123','user', 2, '2020-08-09 10:27:22'),
+  ('kenethrrizzo','root','admin', 1, '2020-08-09 10:27:25');
