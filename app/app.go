@@ -31,19 +31,19 @@ func Start() {
 
 	router.HandleFunc(
 		"/customers", cushandl.getAllCustomers,
-	).Methods(http.MethodGet)
+	).Methods(http.MethodGet).Name("GetAllCustomers")
 
 	router.HandleFunc(
 		"/customers/{customer-id:[0-9]+}", cushandl.getCustomer,
-	).Methods(http.MethodGet)
+	).Methods(http.MethodGet).Name("GetCustomer")
 
 	router.HandleFunc(
 		"/customers/{customer-id:[0-9]+}/account", acchandl.newAccount,
-	).Methods(http.MethodPost)
+	).Methods(http.MethodPost).Name("NewAccount")
 
 	router.HandleFunc(
 		"/customers/{customer-id:[0-9]+}/account/{account-id:[0-9]+}", acchandl.makeTransaction,
-	).Methods(http.MethodPost)
+	).Methods(http.MethodPost).Name("NewTransaction")
 
 	logger.Error(http.ListenAndServe(
 		fmt.Sprintf("%s:%s",
