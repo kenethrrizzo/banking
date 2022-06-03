@@ -38,7 +38,7 @@ func (a AuthMiddleware) authorizationHandler() func(http.Handler) http.Handler {
 func getTokenFromHeader(header string) string {
 	tokenSplited := strings.Split(header, "Bearer")
 	if len(tokenSplited) == 2 {
-		return tokenSplited[1]
+		return strings.TrimSpace(tokenSplited[1])
 	}
 	return ""
 }

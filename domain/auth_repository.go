@@ -36,13 +36,14 @@ func buildVerifyURL(token, routeName string, vars map[string]string) string {
 	query := url.Query()
 
 	query.Add("token", token)
-	query.Add("route_name", routeName)
+	query.Add("route-name", routeName)
 
 	for k, v := range vars {
 		query.Add(k, v)
 	}
 
 	url.RawQuery = query.Encode()
+	logger.Info("URL: " + url.String())
 	return url.String()
 }
 
