@@ -1,6 +1,10 @@
 package domain
 
-import "github.com/kenethrrizzo/banking/dto"
+import (
+	"errors"
+
+	"github.com/kenethrrizzo/banking/dto"
+)
 
 const (
 	WITHDRAWAL string = "withdrawal"
@@ -25,6 +29,13 @@ func (t Transaction) IsDeposit() bool {
 
 func (t Transaction) IsAmountPositive() bool {
 	return t.Amount > 0
+}
+
+func (t Transaction) ValidateType() error {
+	if !t.IsDeposit() && !t.IsWithdrawal() {
+		return errors.New("Invalid transaction type")
+	}
+	return nil
 }
 
 func (t Transaction) ToDto() dto.TransactionResponse {

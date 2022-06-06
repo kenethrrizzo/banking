@@ -60,10 +60,12 @@ func (s DefaultAccountService) MakeTransaction(req dto.TransactionRequest) (*dto
 		Date: time.Now().Format(dbTSLayout),
 	}
 
-	if !t.IsDeposit() && !t.IsWithdrawal() {
+	err := t.ValidateType()
+	if err != nil {
 		logger.Error(fmt.Sprintf("Transaction type '%s' is not allowed", req.Type))
 		return nil, errs.NewValidationError("Transaction type not allowed")
 	}
+
 	if !t.IsAmountPositive() {
 		logger.Error("Amount must be positive")
 		return nil, errs.NewValidationError("Negative amount")
@@ -79,9 +81,9 @@ func (s DefaultAccountService) MakeTransaction(req dto.TransactionRequest) (*dto
 		}
 	}
 
-	transaction, err := s.repo.SaveTransaction(t)
-	if err != nil {
-		return nil, err
+	transaction, apperr := s.repo.SaveTransaction(t)
+	if apperr != nil {
+		return nil, apperr
 	}
 
 	response := transaction.ToDto()

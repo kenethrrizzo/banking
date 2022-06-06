@@ -63,3 +63,10 @@ INSERT INTO `Users` VALUES
   ('admin','abc123','admin', NULL, '2020-08-09 10:27:22'),
   ('2001','abc123','user', 2, '2020-08-09 10:27:22'),
   ('kenethrrizzo','root','admin', 1, '2020-08-09 10:27:25');
+  
+ 
+ select u.Username, u.CustomerId, u.Role, group_concat(a.Id) as AccountNumbers 
+		from Users u
+		left join Accounts a on a.Id = u.CustomerId
+		where u.Username = '2001' and u.Password = 'abc123'
+		group by a.CustomerId;
