@@ -53,11 +53,11 @@ func (s DefaultAccountService) NewAccount(req dto.NewAccountRequest) (*dto.NewAc
 }
 
 func (s DefaultAccountService) MakeTransaction(req dto.TransactionRequest) (*dto.TransactionResponse, *errs.AppError) {
-	t := domain.Transaction {
+	t := domain.Transaction{
 		AccountId: req.AccountId,
-		Amount: req.Amount,
-		Type: req.Type,
-		Date: time.Now().Format(dbTSLayout),
+		Amount:    req.Amount,
+		Type:      req.Type,
+		Date:      time.Now().Format(dbTSLayout),
 	}
 
 	err := t.ValidateType()
