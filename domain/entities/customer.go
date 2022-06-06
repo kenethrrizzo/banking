@@ -1,10 +1,9 @@
-package domain
+package entities
 
 // Secundary port: Interface
 
 import (
 	"github.com/kenethrrizzo/banking/dto"
-	errs "github.com/kenethrrizzo/banking/error"
 )
 
 type Customer struct {
@@ -14,11 +13,6 @@ type Customer struct {
 	ZipCode     string `db:"ZipCode"`
 	DateOfBirth string `db:"DateOfBirth"`
 	Status      string `db:"Status"`
-}
-
-type CustomerRepository interface {
-	FindAll(string) ([]Customer, *errs.AppError)
-	FindById(string) (*Customer, *errs.AppError)
 }
 
 func (c Customer) statusAsText() string {

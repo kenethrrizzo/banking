@@ -1,32 +1,33 @@
-package app
+package middlewares
 
 import (
 	"net/http"
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/kenethrrizzo/banking/domain"
+	repo "github.com/kenethrrizzo/banking/domain/repositories"
+	util "github.com/kenethrrizzo/banking/utils"
 )
 
 type AuthMiddleware struct {
-	repo domain.AuthRepository
+	Repo repo.AuthRepository
 }
 
-func (a AuthMiddleware) authorizationHandler() func(http.Handler) http.Handler {
+func (a AuthMiddleware) AuthorizationHandler() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			currentRoute := mux.CurrentRoute(r)
 			currentRouteVars := mux.Vars(r)
 			authHeader := r.Header.Get("Authorization")
 			if authHeader == "" {
-				writeResponse(rw, http.StatusUnauthorized, "Missing token")
+				util.WriteResponse(rw, http.StatusUnauthorized, "Missing token")
 				return
 			}
 			token := getTokenFromHeader(authHeader)
-			isAuthorized := a.repo.IsAuthorized(token, currentRoute.GetName(), currentRouteVars)
+			isAuthorized := a.Repo.IsAuthorized(token, currentRoute.GetName(), currentRouteVars)
 
 			if !isAuthorized {
-				writeResponse(rw, http.StatusUnauthorized, "Unauthorized")
+				util.WriteResponse(rw, http.StatusUnauthorized, "Unauthorized")
 				return
 			}
 

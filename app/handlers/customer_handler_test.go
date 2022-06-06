@@ -1,4 +1,4 @@
-package app
+package handlers
 
 import (
 	"net/http"
@@ -30,7 +30,7 @@ func TestShouldReturnCustomersWithStatusCode200(t *testing.T) {
 	customerHandler := CustomerHandler{mockService}
 
 	router := mux.NewRouter()
-	router.HandleFunc("/customers", customerHandler.getAllCustomers)
+	router.HandleFunc("/customers", customerHandler.GetAllCustomers)
 
 	request, _ := http.NewRequest(http.MethodGet, "/customers", nil)
 
@@ -55,7 +55,7 @@ func TestShouldReturnStatusCode500WithErrorMessage(t *testing.T) {
 	customerHandler := CustomerHandler{mockService}
 
 	router := mux.NewRouter()
-	router.HandleFunc("/customers", customerHandler.getAllCustomers)
+	router.HandleFunc("/customers", customerHandler.GetAllCustomers)
 
 	request, _ := http.NewRequest(http.MethodGet, "/customers", nil)
 

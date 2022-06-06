@@ -7,8 +7,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
+	hndl "github.com/kenethrrizzo/banking/app/handlers"
+	mdl "github.com/kenethrrizzo/banking/app/middlewares"
 	"github.com/kenethrrizzo/banking/config"
-	"github.com/kenethrrizzo/banking/domain"
+	repo "github.com/kenethrrizzo/banking/domain/repositories"
 	"github.com/kenethrrizzo/banking/logger"
 	"github.com/kenethrrizzo/banking/service"
 )
@@ -18,41 +20,43 @@ func Start() {
 	serverConfig := config.NewServerConfig()
 	dbclient := getDatabaseClient()
 
-	customerepodb := domain.NewCustomerRepositoryDb(dbclient)
-	accountrepodb := domain.NewAccountRepositoryDb(dbclient)
+	customerepodb := repo.NewCustomerRepositoryDb(dbclient)
+	accountrepodb := repo.NewAccountRepositoryDb(dbclient)
 
-	cushandl := CustomerHandler{
-		service.NewCustomerService(customerepodb),
+	cushandl := hndl.CustomerHandler{
+		Service: service.NewCustomerService(customerepodb),
 	}
 
-	acchandl := AccountHandler{
-		service.NewAccountService(accountrepodb),
+	acchandl := hndl.AccountHandler{
+		Service: service.NewAccountService(accountrepodb),
 	}
 
 	// Routes
 	router.
-		HandleFunc("/customers", cushandl.getAllCustomers).
+		HandleFunc("/customers", cushandl.GetAllCustomers).
 		Methods(http.MethodGet).
 		Name("GetAllCustomers")
 
 	router.
-		HandleFunc("/customers/{customer-id:[0-9]+}", cushandl.getCustomer).
+		HandleFunc("/customers/{customer-id:[0-9]+}", cushandl.GetCustomer).
 		Methods(http.MethodGet).
 		Name("GetCustomer")
 
 	router.
-		HandleFunc("/customers/{customer-id:[0-9]+}/account", acchandl.newAccount).
+		HandleFunc("/customers/{customer-id:[0-9]+}/account", acchandl.NewAccount).
 		Methods(http.MethodPost).
 		Name("NewAccount")
 
 	router.
-		HandleFunc("/customers/{customer-id:[0-9]+}/account/{account-id:[0-9]+}", acchandl.makeTransaction).
+		HandleFunc("/customers/{customer-id:[0-9]+}/account/{account-id:[0-9]+}", acchandl.MakeTransaction).
 		Methods(http.MethodPost).
 		Name("NewTransaction")
 
 	// Middleware
-	am := AuthMiddleware{domain.NewAuthRepository()}
-	router.Use(am.authorizationHandler())
+	am := mdl.AuthMiddleware{
+		Repo: repo.NewAuthRepository(),
+	}
+	router.Use(am.AuthorizationHandler())
 
 	// Listen
 	logger.Error(http.ListenAndServe(

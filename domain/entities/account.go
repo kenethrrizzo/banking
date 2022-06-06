@@ -1,8 +1,7 @@
-package domain
+package entities
 
 import (
 	"github.com/kenethrrizzo/banking/dto"
-	errs "github.com/kenethrrizzo/banking/error"
 )
 
 type Account struct {
@@ -20,10 +19,4 @@ func (a Account) ToNewAccountResponseDto() dto.NewAccountResponse {
 
 func (a Account) CanWithdraw(amount float64) bool {
 	return amount < a.Amount
-}
-
-type AccountRepository interface {
-	FindById(string) (*Account, *errs.AppError)
-	Save(Account) (*Account, *errs.AppError)
-	SaveTransaction(Transaction) (*Transaction, *errs.AppError)
 }

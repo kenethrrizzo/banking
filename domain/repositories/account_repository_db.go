@@ -1,4 +1,4 @@
-package domain
+package repositories
 
 import (
 	"database/sql"
@@ -8,14 +8,22 @@ import (
 	"github.com/jmoiron/sqlx"
 	errs "github.com/kenethrrizzo/banking/error"
 	"github.com/kenethrrizzo/banking/logger"
+	"github.com/kenethrrizzo/banking/domain/entities"
 )
+
+type AccountRepository interface {
+	FindById(string) (*entities.Account, *errs.AppError)
+	Save(entities.Account) (*entities.Account, *errs.AppError)
+	SaveTransaction(entities.Transaction) (*entities.Transaction, *errs.AppError)
+}
+
 
 type AccountRepositoryDb struct {
 	client *sqlx.DB
 }
 
-func (d AccountRepositoryDb) FindById(id string) (*Account, *errs.AppError) {
-	var a Account
+func (d AccountRepositoryDb) FindById(id string) (*entities.Account, *errs.AppError) {
+	var a entities.Account
 
 	sqlSelect := "select Id, CustomerId, OpeningDate, Type, Amount, Status from	Accounts where Id = ?"
 
@@ -34,7 +42,7 @@ func (d AccountRepositoryDb) FindById(id string) (*Account, *errs.AppError) {
 	return &a, nil
 } 
 
-func (d AccountRepositoryDb) Save(a Account) (*Account, *errs.AppError) {
+func (d AccountRepositoryDb) Save(a entities.Account) (*entities.Account, *errs.AppError) {
 	sqlInsert := "insert into Accounts (CustomerId, OpeningDate, Type, Amount, Status) values (?, ?, ?, ?, ?)"
 
 	result, err := d.client.Exec(sqlInsert, a.CustomerId, a.OpeningDate, a.Type, a.Amount, a.Status)
@@ -55,7 +63,7 @@ func (d AccountRepositoryDb) Save(a Account) (*Account, *errs.AppError) {
 	return &a, nil
 }
 
-func (d AccountRepositoryDb) SaveTransaction(t Transaction) (*Transaction, *errs.AppError) {
+func (d AccountRepositoryDb) SaveTransaction(t entities.Transaction) (*entities.Transaction, *errs.AppError) {
 	tx, err := d.client.Begin()
 	if err != nil {
 		logger.Error("Error while starting a new transaction for bank account transaction: " + err.Error())

@@ -1,4 +1,4 @@
-package domain
+package repositories
 
 // Adapter: Database
 
@@ -8,16 +8,22 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"github.com/kenethrrizzo/banking/domain/entities"
 	errs "github.com/kenethrrizzo/banking/error"
 	"github.com/kenethrrizzo/banking/logger"
 )
+
+type CustomerRepository interface {
+	FindAll(string) ([]entities.Customer, *errs.AppError)
+	FindById(string) (*entities.Customer, *errs.AppError)
+}
 
 type CustomerRepositoryDb struct {
 	client *sqlx.DB
 }
 
-func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError) {
-	customers := make([]Customer, 0)
+func (d CustomerRepositoryDb) FindAll(status string) ([]entities.Customer, *errs.AppError) {
+	customers := make([]entities.Customer, 0)
 	var findAllQuery string
 	if status == "" {
 		findAllQuery = "select Id, Name, City, ZipCode, DateOfBirth, Status from Customers"
@@ -36,8 +42,8 @@ func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppError
 	return customers, nil
 }
 
-func (d CustomerRepositoryDb) FindById(id string) (*Customer, *errs.AppError) {
-	var customer Customer
+func (d CustomerRepositoryDb) FindById(id string) (*entities.Customer, *errs.AppError) {
+	var customer entities.Customer
 	findByIdQuery := "select Id, Name, City, ZipCode, DateOfBirth, Status from Customers where Id = ?"
 
 	err := d.client.Get(&customer, findByIdQuery, id)

@@ -1,4 +1,4 @@
-package app
+package handlers
 
 import (
 	"encoding/json"
@@ -8,32 +8,33 @@ import (
 	"github.com/kenethrrizzo/banking/dto"
 	"github.com/kenethrrizzo/banking/logger"
 	"github.com/kenethrrizzo/banking/service"
+	util "github.com/kenethrrizzo/banking/utils"
 )
 
 type AccountHandler struct {
-	service service.AccountService
+	Service service.AccountService
 }
 
-func (h AccountHandler) newAccount(rw http.ResponseWriter, r *http.Request) {
+func (h AccountHandler) NewAccount(rw http.ResponseWriter, r *http.Request) {
 	logger.Debug("newAccount handler [POST]")
 	vars := mux.Vars(r)
 	customerId := vars["customer-id"]
 	var request dto.NewAccountRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		writeResponse(rw, http.StatusBadRequest, err.Error())
+		util.WriteResponse(rw, http.StatusBadRequest, err.Error())
 		return
 	}
 	request.CustomerId = customerId
-	acc, apperr := h.service.NewAccount(request)
+	acc, apperr := h.Service.NewAccount(request)
 	if apperr != nil {
-		writeResponse(rw, apperr.Code, apperr.Message)
+		util.WriteResponse(rw, apperr.Code, apperr.Message)
 		return
 	}
-	writeResponse(rw, http.StatusCreated, acc)
+	util.WriteResponse(rw, http.StatusCreated, acc)
 }
 
-func (h AccountHandler) makeTransaction(rw http.ResponseWriter, r *http.Request) {
+func (h AccountHandler) MakeTransaction(rw http.ResponseWriter, r *http.Request) {
 	logger.Debug("makeTransaction handler [POST]")
 	vars := mux.Vars(r)
 
@@ -43,16 +44,16 @@ func (h AccountHandler) makeTransaction(rw http.ResponseWriter, r *http.Request)
 	var request dto.TransactionRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		writeResponse(rw, http.StatusBadRequest, err.Error())
+		util.WriteResponse(rw, http.StatusBadRequest, err.Error())
 		return
 	}
 	request.CustomerId = customerId
 	request.AccountId = accountId
 
-	transaction, apperr := h.service.MakeTransaction(request)
+	transaction, apperr := h.Service.MakeTransaction(request)
 	if apperr != nil {
-		writeResponse(rw, apperr.Code, apperr.Message)
+		util.WriteResponse(rw, apperr.Code, apperr.Message)
 		return
 	}
-	writeResponse(rw, http.StatusCreated, transaction)
+	util.WriteResponse(rw, http.StatusCreated, transaction)
 }

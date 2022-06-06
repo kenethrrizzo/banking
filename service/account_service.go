@@ -5,7 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kenethrrizzo/banking/domain"
+	repo "github.com/kenethrrizzo/banking/domain/repositories"
+	ent "github.com/kenethrrizzo/banking/domain/entities"
 	"github.com/kenethrrizzo/banking/dto"
 	errs "github.com/kenethrrizzo/banking/error"
 	"github.com/kenethrrizzo/banking/logger"
@@ -24,7 +25,7 @@ type AccountService interface {
 }
 
 type DefaultAccountService struct {
-	repo domain.AccountRepository
+	repo repo.AccountRepository
 }
 
 func (s DefaultAccountService) NewAccount(req dto.NewAccountRequest) (*dto.NewAccountResponse, *errs.AppError) {
@@ -36,7 +37,7 @@ func (s DefaultAccountService) NewAccount(req dto.NewAccountRequest) (*dto.NewAc
 		return nil, errs.NewValidationError("Account type should be 'checking' or 'saving'")
 	}
 	//map dto to account
-	account := domain.Account{
+	account := ent.Account{
 		Id:          "",
 		CustomerId:  req.CustomerId,
 		OpeningDate: time.Now().Format(dbTSLayout),
@@ -53,7 +54,7 @@ func (s DefaultAccountService) NewAccount(req dto.NewAccountRequest) (*dto.NewAc
 }
 
 func (s DefaultAccountService) MakeTransaction(req dto.TransactionRequest) (*dto.TransactionResponse, *errs.AppError) {
-	t := domain.Transaction{
+	t := ent.Transaction{
 		AccountId: req.AccountId,
 		Amount:    req.Amount,
 		Type:      req.Type,
@@ -92,6 +93,6 @@ func (s DefaultAccountService) MakeTransaction(req dto.TransactionRequest) (*dto
 	return &response, nil
 }
 
-func NewAccountService(repo domain.AccountRepository) DefaultAccountService {
+func NewAccountService(repo repo.AccountRepository) DefaultAccountService {
 	return DefaultAccountService{repo}
 }

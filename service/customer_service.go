@@ -3,7 +3,7 @@ package service
 // Primary port: Service
 
 import (
-	"github.com/kenethrrizzo/banking/domain"
+	repo "github.com/kenethrrizzo/banking/domain/repositories"
 	"github.com/kenethrrizzo/banking/dto"
 	errs "github.com/kenethrrizzo/banking/error"
 )
@@ -17,7 +17,7 @@ type CustomerService interface {
 // Service implementation (core - business logic)
 
 type DefaultCustomerService struct {
-	repo domain.CustomerRepository
+	repo repo.CustomerRepository
 }
 
 func (s DefaultCustomerService) GetAllCustomers(status string) ([]dto.CustomerResponse, *errs.AppError) {
@@ -40,6 +40,6 @@ func (s DefaultCustomerService) GetCustomer(id string) (*dto.CustomerResponse, *
 	response := customer.ToDto()
 	return &response, nil
 }
-func NewCustomerService(repo domain.CustomerRepository) DefaultCustomerService {
+func NewCustomerService(repo repo.CustomerRepository) DefaultCustomerService {
 	return DefaultCustomerService{repo}
 }
