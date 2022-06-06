@@ -8,9 +8,25 @@ func TestShouldReturnErrorWhenTransactionTypeIsNotDepositOrWithdrawl(t *testing.
 		Type: "InvalidTransactionType",
 	}
 	// Act
-	apperr := transaction.ValidateType()
+	err := transaction.ValidateType()
 	// Assert
-	if apperr.Error() != "Invalid transaction type" {
+	if err == nil {
+		t.Error("Method doesn't return error")
+	}
+	if err.Error() != "Invalid transaction type" {
 		t.Error("Invalid message while testing transaction type")
+	}
+}
+
+func TestShouldReturnErrorWhenAmountIsLessThanZero(t *testing.T) {
+	transaction := Transaction{
+		Amount: -20,
+	}
+	err := transaction.ValidateAmount()
+	if err == nil {
+		t.Error("Method doesn't return error")
+	}
+	if err.Error() != "Invalid amount" {
+		t.Error("Invalid message while testing amount")
 	}
 }

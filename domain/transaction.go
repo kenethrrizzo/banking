@@ -38,6 +38,13 @@ func (t Transaction) ValidateType() error {
 	return nil
 }
 
+func (t Transaction) ValidateAmount() error {
+	if !t.IsAmountPositive() {
+		return errors.New("Invalid amount")
+	}
+	return nil
+}
+
 func (t Transaction) ToDto() dto.TransactionResponse {
 	return dto.TransactionResponse{
 		Id:        t.Id,
