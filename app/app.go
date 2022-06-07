@@ -58,11 +58,12 @@ func Start() {
 	router.Use(am.AuthorizationHandler())
 
 	// Listen
-	logger.Error(http.ListenAndServe(
-		fmt.Sprintf("%s:%s",
-			serverConfig.Address,
-			serverConfig.Port),
-		router).Error())
+	err := http.ListenAndServe(
+		fmt.Sprintf("%s:%s", serverConfig.Address, serverConfig.Port), router)
+
+	if err != nil {
+		logger.Error(err.Error())
+	}
 }
 
 func getDatabaseClient() *sqlx.DB {
@@ -70,10 +71,7 @@ func getDatabaseClient() *sqlx.DB {
 
 	client, err := sqlx.Open(
 		dbconfig.Driver,
-		fmt.Sprintf("%s:%s@/%s",
-			dbconfig.Username,
-			dbconfig.Password,
-			dbconfig.Name))
+		fmt.Sprintf("%s:%s@/%s",dbconfig.Username,dbconfig.Password, dbconfig.Name))
 
 	if err != nil {
 		panic(err)

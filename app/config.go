@@ -39,7 +39,7 @@ func unmarshalConfig() Config {
 	v := viper.New()
 
 	v.SetConfigName("config")
-	v.SetConfigType("yml")
+	v.SetConfigType("json")
 	v.AddConfigPath(".")
 
 	err := v.ReadInConfig()
