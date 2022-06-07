@@ -39,7 +39,10 @@ insert into `Accounts` (`CustomerId`, `OpeningDate`, `Type`, `Amount`, `Status`)
 values (2, '', 'checking', 7560.99, '1');
 
 insert into `Accounts` (`CustomerId`, `OpeningDate`, `Type`, `Amount`, `Status`)
-values (3, '', 'saving', 10000.59, '1');
+values (3, '', 'saving', 7560.99, '1');
+
+insert into `Accounts` (`CustomerId`, `OpeningDate`, `Type`, `Amount`, `Status`)
+values (4, '', 'saving', 10000.59, '1');
 
 create table `Transactions` (
 	`Id` int auto_increment primary key,
@@ -59,9 +62,9 @@ create table `Users` (
 	foreign key (`CustomerId`) references Customers(`Id`)
 );
 
-INSERT INTO `Users` VALUES
-  ('admin','abc123','admin', NULL, '2020-08-09 10:27:22'),
-  ('2001','abc123','user', 2, '2020-08-09 10:27:22'),
+insert into `Users` values
+  ('root','root','admin', null, '2020-08-09 10:27:22'),
+  ('camilucas','root','user', 2, '2020-08-09 10:27:22'),
   ('kenethrrizzo','root','admin', 1, '2020-08-09 10:27:25');
   
  
