@@ -9,7 +9,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	hndl "github.com/kenethrrizzo/banking/app/handlers"
 	mdl "github.com/kenethrrizzo/banking/app/middlewares"
-	"github.com/kenethrrizzo/banking/config"
 	repo "github.com/kenethrrizzo/banking/domain/repositories"
 	"github.com/kenethrrizzo/banking/logger"
 	"github.com/kenethrrizzo/banking/service"
@@ -17,7 +16,7 @@ import (
 
 func Start() {
 	router := mux.NewRouter()
-	serverConfig := config.NewServerConfig()
+	serverConfig := NewServerConfig()
 	dbclient := getDatabaseClient()
 
 	customerepodb := repo.NewCustomerRepositoryDb(dbclient)
@@ -67,7 +66,7 @@ func Start() {
 }
 
 func getDatabaseClient() *sqlx.DB {
-	dbconfig := config.NewDatabaseConfig()
+	dbconfig := NewDatabaseConfig()
 
 	client, err := sqlx.Open(
 		dbconfig.Driver,

@@ -1,4 +1,4 @@
-package config
+package app
 
 import (
 	"fmt"
@@ -40,7 +40,7 @@ func unmarshalConfig() Config {
 
 	v.SetConfigName("config")
 	v.SetConfigType("yml")
-	v.AddConfigPath("./config")
+	v.AddConfigPath(".")
 
 	err := v.ReadInConfig()
 	if err != nil {
