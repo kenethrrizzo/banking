@@ -11,6 +11,7 @@ import (
 	"github.com/kenethrrizzo/banking/domain/entities"
 )
 
+//go:generate mockgen -destination=../../mocks/domain/repositories/mock_account_repository.go -package=repositories github.com/kenethrrizzo/banking/domain/repositories AccountRepository
 type AccountRepository interface {
 	FindById(string) (*entities.Account, *errs.AppError)
 	Save(entities.Account) (*entities.Account, *errs.AppError)
