@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	repo "github.com/kenethrrizzo/banking/domain/repositories"
 	ent "github.com/kenethrrizzo/banking/domain/entities"
+	repo "github.com/kenethrrizzo/banking/domain/repositories"
 	"github.com/kenethrrizzo/banking/dto"
 	errs "github.com/kenethrrizzo/banking/error"
 	"github.com/kenethrrizzo/banking/logger"
